@@ -275,6 +275,261 @@ void Mesh::jitterParticlesList()
 	}
 }
 
+bool RopeMesh::Init(){
+	generateParticleList();
+	generateTriangleList();
+	generateEdgeList();
+
+	return true;
+}
+
+void RopeMesh::GetMeshInfo(char *info){
+	sprintf(info, "#Edges: %d | #Vertices: %d", m_edge_list.size(), m_vertices_number);
+}
+void RopeMesh::generateParticleList(){
+	m_vertices_number = m_dim[0]*m_dim[1];
+	m_system_dimension = m_vertices_number * 3; 
+
+	EigenVector3 delta;
+	delta[0] = (m_corners[1][0] - m_corners[0][0]) / (ScalarType)(m_dim[0] - 1);
+	delta[1] = (m_corners[1][1] - m_corners[0][1]) / (ScalarType)(m_dim[1] - 1);
+	delta[2] = (m_corners[1][2] - m_corners[0][2]) / (ScalarType)(m_dim[1] - 1);
+
+	ScalarType unit_mass = m_total_mass / m_vertices_number;
+
+	m_positions.resize(m_vertices_number);
+	m_normals.resize(m_vertices_number);
+	m_colors.resize(m_vertices_number);
+	m_simulation_colors.resize(m_vertices_number);
+	m_texcoords.resize(m_vertices_number);
+
+	m_current_positions.resize(m_system_dimension);
+	m_current_velocities.resize(m_system_dimension);
+	m_mass_matrix.resize(m_system_dimension, m_system_dimension);
+	m_inv_mass_matrix.resize(m_system_dimension, m_system_dimension);
+	m_identity_matrix.resize(m_system_dimension, m_system_dimension);
+
+	m_mass_matrix_1d.resize(m_vertices_number, m_vertices_number);
+	m_identity_matrix_1d.resize(m_vertices_number, m_vertices_number);
+
+	// Assign initial position to all the vertices.
+	m_current_positions.setZero();
+	unsigned int i, k, index;
+	for(i = 0; i < m_dim[0]; ++i)
+	{
+		for(k = 0; k < m_dim[1]; ++k)
+		{
+			index = m_dim[1] * i + k;
+			m_current_positions.block_vector(index) = EigenVector3(delta[0] * i + m_corners[0][0], delta[1] * k + m_corners[0][1], delta[2] * k + m_corners[0][2]);
+		}
+	}
+	// Assign initial velocity to zero
+	m_current_velocities.setZero();
+	
+	// Assign mass matrix and an equally sized identity matrix
+	std::vector<SparseMatrixTriplet> i_triplets;
+	std::vector<SparseMatrixTriplet> m_triplets;
+	std::vector<SparseMatrixTriplet> m_inv_triplets;
+	i_triplets.clear();
+	m_triplets.clear();
+	ScalarType inv_unit_mass = 1.0 / unit_mass;
+	for (index = 0; index < m_system_dimension; index++)
+	{
+		i_triplets.push_back(SparseMatrixTriplet(index, index, 1));
+		m_triplets.push_back(SparseMatrixTriplet(index, index, unit_mass));
+		m_inv_triplets.push_back(SparseMatrixTriplet(index, index, inv_unit_mass));
+	}
+	m_mass_matrix.setFromTriplets(m_triplets.begin(), m_triplets.end());
+	m_inv_mass_matrix.setFromTriplets(m_inv_triplets.begin(), m_inv_triplets.end());
+	m_identity_matrix.setFromTriplets(i_triplets.begin(), i_triplets.end());
+	m_triplets.clear();
+	i_triplets.clear();
+	for (index = 0; index < m_vertices_number; index++)
+	{
+		i_triplets.push_back(SparseMatrixTriplet(index, index, 1));
+		m_triplets.push_back(SparseMatrixTriplet(index, index, unit_mass));
+	}
+	m_mass_matrix_1d.setFromTriplets(m_triplets.begin(), m_triplets.end());
+	m_identity_matrix_1d.setFromTriplets(i_triplets.begin(), i_triplets.end());
+
+	// Assign color and texture uv to all the vertices.
+	glm::vec3 mesh_color(0.3, 0.8, 1);
+	assert(m_dim[0] >=2 && m_dim[1] >= 2);
+	ScalarType inv_1 = 1.0 / (m_dim[0]-1);
+	ScalarType inv_2 = 1.0 / (m_dim[1]-1);
+	for(i = 0; i < m_dim[0]; ++i)
+	{
+		for(k = 0; k < m_dim[1]; ++k)
+		{
+			index = m_dim[1] * i + k;
+			m_colors[index] = mesh_color;
+			m_texcoords[index] = glm::vec2(inv_1*i, inv_2*k);
+		}
+	}
+}
+void RopeMesh::generateTriangleList(){
+	unsigned int i, k, index;
+	// Generate the triangle list.
+	m_triangle_list.resize(( m_dim[0] - 1) * ( m_dim[1] - 1) * 2 * 3);
+	//printf("Triangle number: %u\n", m_triangle_list.size() / 3);
+	// loop over all the small squares.
+	bool row_flip = false, column_flip = false;
+	for(i = 0; i <  m_dim[0] - 1; ++i)
+	{
+		for(k = 0; k <  m_dim[1] - 1; ++k)
+		{
+			index = ( m_dim[1] - 1) * i + k;
+
+			// first triangle
+			m_triangle_list[6 * index + 0] =  m_dim[1] * i + k;
+			m_triangle_list[6 * index + 1] =  m_dim[1] * i + k + 1;
+			m_triangle_list[6 * index + 2] =  m_dim[1] * (i + 1) + ((row_flip ^ column_flip) ? (k + 1) : k);
+			// second triangle
+			m_triangle_list[6 * index + 3] =  m_dim[1] * (i + 1) + k + 1;
+			m_triangle_list[6 * index + 4] =  m_dim[1] * (i + 1) + k;
+			m_triangle_list[6 * index + 5] =  m_dim[1] * i + ((row_flip ^ column_flip) ? k : (k + 1));
+
+			row_flip = !row_flip;
+		}
+		column_flip = !column_flip;
+		row_flip = false;
+	}
+}
+void RopeMesh::generateEdgeList()
+{
+	// generate all the edges from the vertices and triangle list.
+	// courtesy of Eric Lengyel, "Building an Edge List for an Arbitrary Mesh". Terathon Software 3D Graphics Library.
+	// http://www.terathon.com/code/edges.html
+	unsigned int vert_num = m_vertices_number;
+	unsigned int tri_num = m_triangle_list.size() / 3;
+
+	unsigned int *first_edge = new unsigned int[vert_num + 3 * tri_num];
+	unsigned int *next_edge = first_edge + vert_num;
+
+	for(unsigned int i = 0; i < vert_num; ++i)
+		first_edge[i] = 0xFFFFFFFF;
+	// First pass over all triangles. Finds out all the edges satisfying the condition that
+	// the first vertex index is less than the second vertex index when the direction from 
+	// the first to the second represents a counterclockwise winding around the triangle to
+	// which the edge belongs. For each edge found, the edge index is stored in a linked 
+	// list of edges belonging to the lower-numbered vertex index i. This allows us to 
+	// quickly find an edge in the second pass whose higher-numbered vertex is i.
+
+	unsigned int edge_count = 0;
+	const unsigned int* triangle = &m_triangle_list[0];
+	unsigned int i1, i2;
+	for(unsigned int t = 0; t < tri_num; ++t)
+	{
+		i1 = triangle[2];
+		for(unsigned int n = 0; n < 3; ++n)
+		{
+			i2 = triangle[n];
+			if(i1 < i2)
+			{
+				Edge new_edge;
+				new_edge.m_v1 = i1;
+				new_edge.m_v2 = i2;
+				new_edge.m_tri1 = t;
+				new_edge.m_tri2 = t;
+				m_edge_list.push_back(new_edge);
+
+				unsigned int edge_idx = first_edge[i1];
+				if(edge_idx == 0xFFFFFFFF)
+				{
+					first_edge[i1] = edge_count;
+				}
+				else
+				{
+					while(true)
+					{
+						unsigned int idx = next_edge[edge_idx];
+						if(idx == 0xFFFFFFFF)
+						{
+							next_edge[edge_idx] = edge_count;
+							break;
+						}
+						edge_idx = idx;
+					}
+				}
+
+				next_edge[edge_count] = 0xFFFFFFFF;
+				edge_count++;
+			}
+			i1 = i2;
+		}
+		triangle += 3;
+	}
+
+	// Second pass over all triangles. Finds out all the edges satisfying the condition that
+	// the first vertex index is greater than the second vertex index when the direction from 
+	// the first to the second represents a counterclockwise winding around the triangle to
+	// which the edge belongs. For each of these edges, the same edge should have already been
+	// found in the first pass for a different triangle. So we search the list of edges for the
+	// higher-numbered index for the matching edge and fill in the second triangle index. The 
+	// maximum number of the comparisons in this search for any vertex is the number of edges
+	// having that vertex as an endpoint.
+	triangle = &m_triangle_list[0];
+	for(unsigned int t = 0; t < tri_num; ++t)
+	{
+		i1 = triangle[2];
+		for(unsigned int n = 0; n < 3; ++n)
+		{
+			i2 = triangle[n];
+			if(i1 > i2)
+			{
+				bool is_new_edge = true;
+				for(unsigned int edge_idx = first_edge[i2]; edge_idx != 0xFFFFFFFF; edge_idx = next_edge[edge_idx])
+				{
+					Edge *edge = &m_edge_list[edge_idx];
+					if((edge->m_v2 == i1) && (edge->m_tri1 == edge->m_tri2))
+					{
+						edge->m_tri2 = t;
+						is_new_edge = false;
+						break;
+					}
+				}
+				// for case where a edge belongs to only one triangle. i.e. mesh is not watertight.
+				if(is_new_edge)
+				{
+					Edge new_edge;
+					new_edge.m_v1 = i1;
+					new_edge.m_v2 = i2;
+					new_edge.m_tri1 = t;
+					new_edge.m_tri2 = t;
+					m_edge_list.push_back(new_edge);
+
+					unsigned int edge_idx = first_edge[i1];
+					if(edge_idx == 0xFFFFFFFF)
+					{
+						first_edge[i1] = edge_count;
+					}
+					else
+					{
+						while(true)
+						{
+							unsigned int idx = next_edge[edge_idx];
+							if(idx == 0xFFFFFFFF)
+							{
+								next_edge[edge_idx] = edge_count;
+								break;
+							}
+							edge_idx = idx;
+						}
+					}
+
+					next_edge[edge_count] = 0xFFFFFFFF;
+					edge_count++;
+				}
+			}
+			i1 = i2;
+		}
+		triangle += 3;
+	}
+
+	delete[] first_edge;
+	//printf("Edge number: %u.\n", m_edge_list.size());
+}
+
 bool ClothMesh::Init()
 {
 	generateParticleList();

@@ -38,7 +38,6 @@ bool lineTriangleIntersection(EigenVector3& A, EigenVector3& B, EigenVector3& C,
 		return false;
 
 	t = - (n.dot(P-A)) / n.dot(dir);
-	
 	if (t < -COLLISION_EPSILON || t > 1)
 		return false;
 

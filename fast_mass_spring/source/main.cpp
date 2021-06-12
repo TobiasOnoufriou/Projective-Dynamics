@@ -513,6 +513,10 @@ void TW_CALL reset_simulation(void*)
 		delete g_mesh;
 		g_mesh = new TetMesh();
 		break;
+	case MESH_TYPE_ROPE:
+		delete g_mesh;
+		g_mesh = new RopeMesh();
+		break;
 	}
 	g_config_bar->LoadSettings();
 	g_mesh->Reset();

@@ -763,6 +763,54 @@ void Simulation::setupConstraints()
 			}
 		}
 		break;
+	case MESH_TYPE_ROPE:
+		{
+			// generate stretch constraints. assign a stretch constraint for each edge.
+			EigenVector3 p1, p2;
+			for(std::vector<Edge>::iterator e = m_mesh->m_edge_list.begin(); e != m_mesh->m_edge_list.end(); ++e)
+			{
+				p1 = m_mesh->m_current_positions.block_vector(e->m_v1);
+				p2 = m_mesh->m_current_positions.block_vector(e->m_v2);
+				SpringConstraint* c = new SpringConstraint(&m_stiffness_stretch, e->m_v1, e->m_v2, (p1-p2).norm());
+				m_constraints.push_back(c);
+				m_mesh->m_expanded_system_dimension+=6;
+				m_mesh->m_expanded_system_dimension_1d+=2;
+			}
+
+			// generate bending constraints. naive way
+			unsigned int i, k;
+			for(i = 0; i < m_mesh->m_dim[0]; ++i)
+			{
+				for(k = 0; k < m_mesh->m_dim[1]; ++k)
+				{
+					unsigned int index_self = m_mesh->m_dim[1] * i + k;
+					p1 = m_mesh->m_current_positions.block_vector(index_self);
+					if (i+2 < m_mesh->m_dim[0])
+					{
+						unsigned int index_row_1 = m_mesh->m_dim[1] * (i + 2) + k;
+						p2 = m_mesh->m_current_positions.block_vector(index_row_1);
+						SpringConstraint* c = new SpringConstraint(&m_stiffness_bending, index_self, index_row_1, (p1-p2).norm());
+						m_constraints.push_back(c);
+						m_mesh->m_expanded_system_dimension+=6;
+						m_mesh->m_expanded_system_dimension_1d+=2;
+					} 
+					if (k+2 < m_mesh->m_dim[1])
+					{
+						unsigned int index_column_1 = m_mesh->m_dim[1] * i + k + 2;
+						p2 = m_mesh->m_current_positions.block_vector(index_column_1);
+						SpringConstraint* c = new SpringConstraint(&m_stiffness_bending, index_self, index_column_1, (p1-p2).norm());
+						m_constraints.push_back(c);
+						m_mesh->m_expanded_system_dimension+=6;
+						m_mesh->m_expanded_system_dimension_1d+=2;
+					}
+				}
+			}
+
+			// generating attachment constraints.
+			AddAttachmentConstraint(0);
+			AddAttachmentConstraint(m_mesh->m_dim[1]*(m_mesh->m_dim[0]-1));		
+		}
+		break;
 	}
 }
 

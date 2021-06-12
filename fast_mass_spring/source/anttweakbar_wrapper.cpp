@@ -115,9 +115,11 @@ void AntTweakBarWrapper::Init()
 	m_mesh_bar = TwNewBar("Mesh Settings");
 	TwDefine(" 'Mesh Settings' size='200 250' position='10 10' color='210 240 255' text=dark ");
 	// mesh type
-	TwEnumVal meshTypeStyleEV[2] =  {{MESH_TYPE_CLOTH, "Cloth"},
-									 {MESH_TYPE_TET, "Tet Mesh"}};
-	TwType meshTypeStyle = TwDefineEnum("MeshType", meshTypeStyleEV, 2);
+	TwEnumVal meshTypeStyleEV[3] =  {
+									{MESH_TYPE_CLOTH, "Cloth"},
+									{MESH_TYPE_TET, "Tet Mesh"},
+									{MESH_TYPE_ROPE, "Rope"}};
+	TwType meshTypeStyle = TwDefineEnum("MeshType", meshTypeStyleEV, 3);
 	TwAddVarRW(m_mesh_bar, "Mesh Type", meshTypeStyle, &g_mesh->m_mesh_type, " ");
 	TwAddVarRW(m_mesh_bar, "Total Mass", TW_TYPE_SCALAR_TYPE, &(g_mesh->m_total_mass), " ");
 	// tet settings
@@ -241,10 +243,17 @@ int AntTweakBarWrapper::Update()
 	case MESH_TYPE_TET:
 		TwDefine(" 'Mesh Settings'/'Tet Settings' visible=true");
 		TwDefine(" 'Mesh Settings'/'Cloth Settings' visible=false");
+		TwDefine(" 'Mesh Settings'/'Rope Settings' visible=false");
 		break;
 	case MESH_TYPE_CLOTH:
 		TwDefine(" 'Mesh Settings'/'Tet Settings' visible=false");
 		TwDefine(" 'Mesh Settings'/'Cloth Settings' visible=true");
+		TwDefine(" 'Mesh Settings'/'Rope Settings' visible=false");
+		break;
+	case MESH_TYPE_ROPE:
+		TwDefine(" 'Mesh Settings'/'Tet Settings' visible=false");
+		TwDefine(" 'Mesh Settings'/'Cloth Settings' visible=false");
+		TwDefine(" 'Mesh Settings'/'Rope Settings' visible=true");
 		break;
 	}
 

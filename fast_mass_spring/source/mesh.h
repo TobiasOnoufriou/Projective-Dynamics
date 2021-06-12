@@ -50,6 +50,7 @@ typedef enum
 {
 	MESH_TYPE_CLOTH,
 	MESH_TYPE_TET,
+	MESH_TYPE_ROPE,
 
 	MESH_TYPE_TOTAL_NUM
 } MeshType;
@@ -190,6 +191,27 @@ protected:
 	virtual void generateParticleList();
 	// generate triangle list from vetices
 	virtual void generateTriangleList();
+};
+
+// New stuff I Added for rope simulation.
+class RopeMesh: public Mesh {
+	
+	friend class AntTweakBarWrapper;
+	friend class Simulation;
+
+	public:
+		RopeMesh() : Mesh(MESH_TYPE_ROPE) {}
+		RopeMesh(unsigned int dim0, unsigned int dim1) : Mesh(MESH_TYPE_ROPE) {m_dim[0] = dim0; m_dim[1] = dim1;}
+		virtual ~RopeMesh() {}
+
+		virtual bool Init();
+		virtual void GetMeshInfo(char* info);
+
+	protected:
+		virtual void generateParticleList();
+		virtual void generateTriangleList();
+		virtual void generateEdgeList();
+
 };
 
 #endif
