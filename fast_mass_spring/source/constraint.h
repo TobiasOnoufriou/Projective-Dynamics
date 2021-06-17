@@ -150,6 +150,8 @@ public:
 	double clamp( double n, double lower, double upper );
 
 private:
+
+	const VectorX GetBaryCentricCoordinate(EigenMatrix3& F);
 	void getDeformationGradient(EigenMatrix3& F, const VectorX& x);
 	void getStressTensor(EigenMatrix3& P, const EigenMatrix3& F, const EigenMatrix3& R);
 	void singularValueDecomp(EigenMatrix3& U, EigenVector3& SIGMA, EigenMatrix3& V, const EigenMatrix3& A);
@@ -165,5 +167,9 @@ protected:
 	SparseMatrix m_Q_kron_I33;
 	ScalarType m_W; // 1/6 det(Dr);
 };
+
+
+
+
 
 #endif

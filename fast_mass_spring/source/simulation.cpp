@@ -362,6 +362,8 @@ void Simulation::Update()
 		case INTEGRATION_PBD:							// TODO
 		case INTEGRATION_LOCAL_GLOBAL:					// DONE
 		{
+			// This will want to be added to the GPU by using shaders
+			// Which may need to interface with the glsl_wrapper.
 			omp_set_num_threads(m_constraints.size());
 			
 			AttachmentConstraint* ac;
@@ -764,51 +766,17 @@ void Simulation::setupConstraints()
 		}
 		break;
 	case MESH_TYPE_ROPE:
-		{
-			// generate stretch constraints. assign a stretch constraint for each edge.
-			EigenVector3 p1, p2;
-			for(std::vector<Edge>::iterator e = m_mesh->m_edge_list.begin(); e != m_mesh->m_edge_list.end(); ++e)
 			{
-				p1 = m_mesh->m_current_positions.block_vector(e->m_v1);
-				p2 = m_mesh->m_current_positions.block_vector(e->m_v2);
-				SpringConstraint* c = new SpringConstraint(&m_stiffness_stretch, e->m_v1, e->m_v2, (p1-p2).norm());
+			VectorX& x = m_mesh->m_current_positions;
+			RopeMesh* rope_mesh = dynamic_cast<RopeMesh*>(m_mesh);
+			for (unsigned int i = 0; i < rope_mesh->m_loaded_mesh->m_tets.size(); ++i)
+			{
+				MeshLoader::Tet& tet = rope_mesh->m_loaded_mesh->m_tets[i];
+				TetConstraint *c = new TetConstraint(&m_stiffness_stretch, tet.id1, tet.id2, tet.id3, tet.id4, x);
 				m_constraints.push_back(c);
-				m_mesh->m_expanded_system_dimension+=6;
-				m_mesh->m_expanded_system_dimension_1d+=2;
+				m_mesh->m_expanded_system_dimension+=9;
+				m_mesh->m_expanded_system_dimension_1d+=3;
 			}
-
-			// generate bending constraints. naive way
-			unsigned int i, k;
-			for(i = 0; i < m_mesh->m_dim[0]; ++i)
-			{
-				for(k = 0; k < m_mesh->m_dim[1]; ++k)
-				{
-					unsigned int index_self = m_mesh->m_dim[1] * i + k;
-					p1 = m_mesh->m_current_positions.block_vector(index_self);
-					if (i+2 < m_mesh->m_dim[0])
-					{
-						unsigned int index_row_1 = m_mesh->m_dim[1] * (i + 2) + k;
-						p2 = m_mesh->m_current_positions.block_vector(index_row_1);
-						SpringConstraint* c = new SpringConstraint(&m_stiffness_bending, index_self, index_row_1, (p1-p2).norm());
-						m_constraints.push_back(c);
-						m_mesh->m_expanded_system_dimension+=6;
-						m_mesh->m_expanded_system_dimension_1d+=2;
-					} 
-					if (k+2 < m_mesh->m_dim[1])
-					{
-						unsigned int index_column_1 = m_mesh->m_dim[1] * i + k + 2;
-						p2 = m_mesh->m_current_positions.block_vector(index_column_1);
-						SpringConstraint* c = new SpringConstraint(&m_stiffness_bending, index_self, index_column_1, (p1-p2).norm());
-						m_constraints.push_back(c);
-						m_mesh->m_expanded_system_dimension+=6;
-						m_mesh->m_expanded_system_dimension_1d+=2;
-					}
-				}
-			}
-
-			// generating attachment constraints.
-			AddAttachmentConstraint(0);
-			AddAttachmentConstraint(m_mesh->m_dim[1]*(m_mesh->m_dim[0]-1));		
 		}
 		break;
 	}

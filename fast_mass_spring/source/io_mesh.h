@@ -54,7 +54,7 @@ public:
 	};
 
 	MeshLoader();
-	MeshLoader(char* filename, float scale = 10.0f, bool flip = false, glm::vec3 translate = glm::vec3(0.0f, 4.0f, 0.0f));
+	MeshLoader(char* filename, float scale = 10.0f, bool flip = false, glm::vec3 translate = glm::vec3(0.0f, 0.0f, 0.0f));
 	virtual ~MeshLoader();
 
 	inline bool Info() {return load_success;}

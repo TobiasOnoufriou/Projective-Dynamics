@@ -80,6 +80,7 @@
 #define DEFAULT_OUTPUT_CLOTH_OBJ_FILE "./output/mesh.obj"
 #define DEFAULT_OUTPUT_ATTACHMENT_OBJ_FILE "./output/handle.obj"
 #define DEFAULT_MODEL "./mesh_models/cube86.mesh"
+#define DEFAULT_ROPE "./mesh_models/cyl248.mesh"
 #define DEFAULT_OBJ_MODEL "./obj_models/bunny.obj"
 
 #endif

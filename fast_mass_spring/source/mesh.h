@@ -132,6 +132,13 @@ protected:
 	ScalarType m_tet_scaling;
 	bool m_tet_flip;
 
+	//For Rope Mesh
+	char m_rope_file_path[256];
+	ScalarType m_rope_scaling;
+	bool m_rope_flip;
+
+
+
 protected:
 	// initialize every particle pos / vel / mass / color.
 	virtual void generateParticleList() {std::cout << "Warning: reach base class virtual function." << std::endl;}
@@ -193,24 +200,33 @@ protected:
 	virtual void generateTriangleList();
 };
 
+
+
+
+
+
 // New stuff I Added for rope simulation.
 class RopeMesh: public Mesh {
-	
 	friend class AntTweakBarWrapper;
 	friend class Simulation;
 
-	public:
-		RopeMesh() : Mesh(MESH_TYPE_ROPE) {}
-		RopeMesh(unsigned int dim0, unsigned int dim1) : Mesh(MESH_TYPE_ROPE) {m_dim[0] = dim0; m_dim[1] = dim1;}
-		virtual ~RopeMesh() {}
+public:
+	RopeMesh() : Mesh(MESH_TYPE_ROPE), m_loaded_mesh(NULL) {}
+	virtual ~RopeMesh() {if(m_loaded_mesh) {delete m_loaded_mesh;}}
 
-		virtual bool Init();
-		virtual void GetMeshInfo(char* info);
+	virtual bool Init();
+	virtual void GetMeshInfo(char* info);
 
-	protected:
-		virtual void generateParticleList();
-		virtual void generateTriangleList();
-		virtual void generateEdgeList();
+protected:
+	// tet mesh if loaded from mesh file
+	MeshLoader *m_loaded_mesh;
+
+protected:
+
+	// initialize every particle pos / vel / mass / color.
+	virtual void generateParticleList();
+	// generate triangle list from vetices
+	virtual void generateTriangleList();
 
 };
 

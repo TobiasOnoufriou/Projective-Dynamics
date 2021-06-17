@@ -126,6 +126,12 @@ void AntTweakBarWrapper::Init()
 	TwAddVarRW(m_mesh_bar, "Tet File", TW_TYPE_CSSTRING(sizeof(g_mesh->m_tet_file_path)), &(g_mesh->m_tet_file_path), " group='Tet Settings' ");
 	TwAddVarRW(m_mesh_bar, "Tet Scaling", TW_TYPE_SCALAR_TYPE, &(g_mesh->m_tet_scaling), " min=0.01 group='Tet Settings' ");
 	TwAddVarRW(m_mesh_bar, "Tet Flip", TwType(sizeof(bool)), &(g_mesh->m_tet_flip), " group='Tet Settings' ");
+
+	//Rope Settings
+	TwAddVarRW(m_mesh_bar, "Rope File", TW_TYPE_CSSTRING(sizeof(g_mesh->m_rope_file_path)), &(g_mesh->m_rope_file_path), " group='Rope Settings' ");
+	TwAddVarRW(m_mesh_bar, "Rope Scaling", TW_TYPE_SCALAR_TYPE, &(g_mesh->m_rope_scaling), " min=0.01 group='Rope Settings' ");
+	TwAddVarRW(m_mesh_bar, "Rope Flip", TwType(sizeof(bool)), &(g_mesh->m_rope_flip), " group='Rope Settings' ");
+
 	// cloth settings
 	// cloth dimensions
 	TwAddVarRW(m_mesh_bar, "dim1", TW_TYPE_INT32, &(g_mesh->m_dim[0]), " label='Width' min=2 group='Cloth Dimension' ");
@@ -359,6 +365,9 @@ void AntTweakBarWrapper::SaveSettings()
 		outfile << "TetFilePath         " << g_mesh->m_tet_file_path<< std::endl;
 		outfile << "TetScaling          " << g_mesh->m_tet_scaling << std::endl;
 		outfile << "TetFlip             " << g_mesh->m_tet_flip << std::endl;
+		outfile << "RopeFilePath        " << g_mesh->m_rope_file_path<< std::endl;
+		outfile << "RopeScaling         " << g_mesh->m_rope_scaling << std::endl;
+		outfile << "RopeFlip            " << g_mesh->m_rope_flip << std::endl;
 		outfile << "ClothDimension      " << g_mesh->m_dim[0] << " " \
 										  << g_mesh->m_dim[1] \
 										  << std::endl;
@@ -435,6 +444,9 @@ void AntTweakBarWrapper::LoadSettings()
 		infile >> ignoreToken >> g_mesh->m_tet_file_path;
 		infile >> ignoreToken >> g_mesh->m_tet_scaling;
 		infile >> ignoreToken >> g_mesh->m_tet_flip;
+		infile >> ignoreToken >> g_mesh->m_rope_file_path;
+		infile >> ignoreToken >> g_mesh->m_rope_scaling;
+		infile >> ignoreToken >> g_mesh->m_rope_flip;
 		infile >> ignoreToken >> g_mesh->m_dim[0] \
 							  >> g_mesh->m_dim[1];
 		infile >> ignoreToken >> g_mesh->m_corners[0][0] \
@@ -505,6 +517,13 @@ void AntTweakBarWrapper::DefaultSettings()
 	strcpy(g_mesh->m_tet_file_path, DEFAULT_MODEL);
 	g_mesh->m_tet_scaling = 1.0;
 	g_mesh->m_tet_flip = false;
+
+	// Rope
+	strcpy(g_mesh->m_rope_file_path, DEFAULT_ROPE);
+	g_mesh->m_rope_scaling = 1.0;
+	g_mesh->m_rope_flip = false;
+
+
 	// cloth
 	g_mesh->m_dim[0] = 21;
 	g_mesh->m_dim[1] = 21;
