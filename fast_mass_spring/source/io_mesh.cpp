@@ -54,11 +54,11 @@ MeshLoader::MeshLoader(char* filename, float scale, bool flip, glm::vec3 transla
 		return;
 	}
 
-	char buffer[256];
+	char buffer[2052];
 	glm::vec3 pos;
 	Face face; 
 	Tet tet; 
-	char ignore[256];
+	char ignore[2052];
 	while(!infile.eof())
 	{
 		infile >> buffer;

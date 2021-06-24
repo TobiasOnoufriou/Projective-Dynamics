@@ -3,7 +3,7 @@ TotalFrame          1000
 MeshBody            1
 Wireframe           1
 Wireframe           1
-Texture             1
+Texture             0
 ScreenWidth         2560
 ScreenHeight        1377
 
@@ -14,18 +14,18 @@ TetScaling          1
 TetFlip             0
 RopeFilePath        ./mesh_models/cyl248.mesh
 RopeScaling         10
-RopeFlip            1
-ClothDimension      18 18
-ClothCorners        -5 8 -5 5 8 5
+RopeFlip            0
+ClothDimension      21 21
+ClothCorners        -5 8 -5 5 -1.85 -3.26
 
 SimMethod           1
-Timestep            0.05
+Timestep            0.0333
 QuasiStatics        0
 Subspace            1
-AttachmentStiffness 75
-StretchStiffness    20
+AttachmentStiffness 120
+StretchStiffness    80
 BendingStiffness    20
-GravityConstant     9.8
+GravityConstant     100
 DampingCoefficient  0.001
 IterationsPerFrame  10
 LSEnable            1
@@ -34,6 +34,6 @@ LSAlpha             0.25
 LSBeta              0.1
 AnimEnableSwing     0
 AnimSwingAll        1
-AnimHalfPeriod      54
-AnimAmp             4
+AnimHalfPeriod      10
+AnimAmp             2
 AnimDir             0 1 0

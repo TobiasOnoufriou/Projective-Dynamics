@@ -362,8 +362,6 @@ void Simulation::Update()
 		case INTEGRATION_PBD:							// TODO
 		case INTEGRATION_LOCAL_GLOBAL:					// DONE
 		{
-			// This will want to be added to the GPU by using shaders
-			// Which may need to interface with the glsl_wrapper.
 			omp_set_num_threads(m_constraints.size());
 			
 			AttachmentConstraint* ac;

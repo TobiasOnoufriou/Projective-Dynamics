@@ -1,20 +1,10 @@
-﻿Build started 6/17/2021 7:29:45 PM.
+﻿Build started 6/23/2021 10:21:03 PM.
      1>Project "C:\Users\Tobi\Documents\Project\Temp\Door\Projective-Dynamics\fast_mass_spring\fast_mass_spring.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "x64\Release\fast_mass_spring.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\x86_amd64\CL.exe /c /I../external_dependencies/AntTweakBar/include /I../external_dependencies/Eigen /I../external_dependencies/freeglut/include /I../external_dependencies/glew/include /I../external_dependencies/glm /I../external_dependencies/TinyXML/include /Zi /nologo /W3 /WX- /O2 /Oi /Ot /GL /D NDEBUG /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /openmp /Fo"x64\Release\\" /Fd"x64\Release\vc100.pdb" /Gd /TP /errorReport:prompt source\mesh.cpp
-         mesh.cpp
-     1>c:\users\tobi\documents\project\temp\door\projective-dynamics\fast_mass_spring\source\primitive.h(111): warning C4305: 'initializing' : truncation from 'double' to 'float'
-     1>source\mesh.cpp(126): warning C4244: 'argument' : conversion from 'int' to 'GLfloat', possible loss of data
-     1>source\mesh.cpp(279): warning C4244: 'argument' : conversion from 'ScalarType' to 'float', possible loss of data
-     1>source\mesh.cpp(295): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(371) : see declaration of 'sprintf'
-     1>source\mesh.cpp(387): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(371) : see declaration of 'sprintf'
-     1>source\mesh.cpp(640): warning C4244: 'argument' : conversion from 'ScalarType' to 'float', possible loss of data
-     1>source\mesh.cpp(657): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdio.h(371) : see declaration of 'sprintf'
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\x86_amd64\CL.exe /c /I../external_dependencies/AntTweakBar/include /I../external_dependencies/Eigen /I../external_dependencies/freeglut/include /I../external_dependencies/glew/include /I../external_dependencies/glm /I../external_dependencies/TinyXML/include /Zi /nologo /W3 /WX- /O2 /Oi /Ot /GL /D NDEBUG /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /openmp /Fo"x64\Release\\" /Fd"x64\Release\vc100.pdb" /Gd /TP /errorReport:prompt source\io_mesh.cpp
+         io_mesh.cpp
          All outputs are up-to-date.
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Tobi\Documents\Project\Temp\Door\Projective-Dynamics\x64\Release\fast_mass_spring.exe" /NOLOGO /LIBPATH:../external_dependencies/AntTweakBar/lib /LIBPATH:../external_dependencies/glew/lib /LIBPATH:../external_dependencies/freeglut/lib/x64 /LIBPATH:../external_dependencies/TinyXML/lib tinyxml_STL.lib glew32.lib glu32.lib opengl32.lib freeglut.lib AntTweakBar64.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"x64\Release\fast_mass_spring.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Tobi\Documents\Project\Temp\Door\Projective-Dynamics\x64\Release\fast_mass_spring.pdb" /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Tobi\Documents\Project\Temp\Door\Projective-Dynamics\x64\Release\fast_mass_spring.lib" /MACHINE:X64 x64\Release\anttweakbar_wrapper.obj
@@ -47,4 +37,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:08.85
+Time Elapsed 00:00:08.68
