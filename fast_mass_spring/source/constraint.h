@@ -39,7 +39,7 @@
 #include "opengl_headers.h"
 #include "primitive.h"
 
-enum {ATTACHMENT, SPRING, TET};
+enum {ATTACHMENT, SPRING, TET, MOUSE};
 
 class Constraint
 {
@@ -151,7 +151,7 @@ public:
 
 private:
 
-	const VectorX GetBaryCentricCoordinate(EigenMatrix3& F);
+	//const VectorX GetBaryCentricCoordinate(EigenMatrix3& F);
 	void getDeformationGradient(EigenMatrix3& F, const VectorX& x);
 	void getStressTensor(EigenMatrix3& P, const EigenMatrix3& F, const EigenMatrix3& R);
 	void singularValueDecomp(EigenMatrix3& U, EigenVector3& SIGMA, EigenMatrix3& V, const EigenMatrix3& A);
@@ -168,8 +168,15 @@ protected:
 	ScalarType m_W; // 1/6 det(Dr);
 };
 
-
-
-
+class MouseControlledConstraint: public Constraint {
+	public:
+		MouseControlledConstraint(ScalarType *stiffness);
+		MouseControlledConstraint(ScalarType *stiffness, unsigned int p1, unsigned int p2, ScalarType length);
+		MouseControlledConstraint();
+	protected:
+		EigenVector3 m_mouse;
+	public:
+		void EvaluateMoveMouseConstraint(EigenVector3 &pos);
+};
 
 #endif

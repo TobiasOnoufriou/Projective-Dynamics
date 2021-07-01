@@ -82,7 +82,7 @@ unsigned char g_button_mask = 0x00;
 
 //----------Frame Rate/Frame Number----------//
 mmc::FpsTracker g_fps_tracker;
-int g_max_fps = 30;
+int g_max_fps = 144;
 int g_timestep = 1000 / g_max_fps;
 
 //----------Recording Related----------------//
@@ -361,7 +361,7 @@ void mouse_click(int button, int state, int x, int y)
 					g_simulation->SetReprefactorFlag();
 				}
 			}
-		   break;
+			break;
 		case GLUT_UP:
 			if (glutGetModifiers() == GLUT_ACTIVE_CTRL)
 			{// special case for ctrl

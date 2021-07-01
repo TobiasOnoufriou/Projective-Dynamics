@@ -12,8 +12,8 @@ MeshMass            1
 TetFilePath         ./mesh_models/cube86.mesh
 TetScaling          1
 TetFlip             0
-RopeFilePath        ./mesh_models/cyl248.mesh
-RopeScaling         10
+RopeFilePath        ./mesh_models/ThingyRope.mesh
+RopeScaling         1
 RopeFlip            0
 ClothDimension      21 21
 ClothCorners        -5 8 -5 5 -1.85 -3.26
@@ -22,12 +22,12 @@ SimMethod           1
 Timestep            0.0333
 QuasiStatics        0
 Subspace            1
-AttachmentStiffness 120
-StretchStiffness    80
+AttachmentStiffness 10
+StretchStiffness    120
 BendingStiffness    20
-GravityConstant     100
-DampingCoefficient  0.001
-IterationsPerFrame  10
+GravityConstant     20
+DampingCoefficient  0.03
+IterationsPerFrame  5
 LSEnable            1
 LSStep              1
 LSAlpha             0.25

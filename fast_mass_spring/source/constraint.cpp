@@ -154,6 +154,14 @@ void AttachmentConstraint::WriteToFileOBJHead(std::ofstream& outfile)
 	outfile << "// " << m_p0 << " " << v[0] << " " << v[1] << " " << v[2] << std::endl;
 }
 
+// ---------MouseControlledConstraint Class----//
+
+MouseControlledConstraint::MouseControlledConstraint(ScalarType *stiffness)
+	: Constraint(stiffness)
+{
+	constraintType = MOUSE;
+}
+
 //----------SpringConstraint Class----------//
 SpringConstraint::SpringConstraint(ScalarType *stiffness) : 
 	Constraint(stiffness)
