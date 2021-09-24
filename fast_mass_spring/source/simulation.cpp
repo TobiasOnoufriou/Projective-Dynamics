@@ -340,6 +340,15 @@ void Simulation::CreateRHSMatrix()
 
 
 ////////////////////////////////////////////////////
+// Update() using the GPU
+////////////////////////////////////////////////////
+
+void Simulation::UpdateCuda() {
+
+}
+
+
+////////////////////////////////////////////////////
 // Update()
 ////////////////////////////////////////////////////
 
@@ -375,7 +384,7 @@ void Simulation::Update()
 			VectorX q_n = m_mesh->m_current_positions;
 			VectorX s_n = m_inertia_y + (m_h*m_h)*(m_mesh->m_inv_mass_matrix)*m_external_force;
 			VectorX q_n1 = s_n;
-
+			
 			SparseMatrix coeff = m_mesh->m_mass_matrix / (m_h * m_h);
 			coeff.applyThisOnTheLeft(s_n);
 			
@@ -401,6 +410,7 @@ void Simulation::Update()
 						{
 							c_j = m_constraints[tn];
 							constraintType = c_j->constraintType;
+							std::cout << constraintType << std::endl;
 
 							#pragma omp critical
 							{
@@ -447,7 +457,7 @@ void Simulation::Update()
 									p_j->block_vector( 2 ) = tet_verts_new.block_vector( 2 );
 									p_j->block_vector( 3 ) = tet_verts_new.block_vector( 3 );
 								}
-
+								
 								c_j->m_RHS.applyThisOnTheLeft(*p_j);
 								b += *p_j;
 							}
@@ -805,6 +815,16 @@ void Simulation::calculateExternalForce()
 	m_external_force = m_mesh->m_mass_matrix * m_external_force;
 }
 
+//To do: Need to add self collision of object
+
+
+bool Simulation::IntersectionTest(EigenVector3& p, EigenVector3& normal, ScalarType& dist) {
+	// Take what is already inside IntersectionTest but apply the values from the current mesh.
+
+	return false;
+}
+
+
 VectorX Simulation::collisionDetection(const VectorX x)
 {
 	// Naive implementation of collision detection
@@ -822,7 +842,7 @@ VectorX Simulation::collisionDetection(const VectorX x)
 	for (unsigned int i = 0; i < m_mesh->m_vertices_number; ++i)
 	{
 		EigenVector3 xi = x.block_vector(i);
-
+		//To Do: Make a similar static intersection test function but for self mesh.
 		if (m_scene->StaticIntersectionTest(xi, normal, dist))
 		{
 			penetration.block_vector( i ) +=  dist * normal;
@@ -852,7 +872,9 @@ VectorX Simulation::collisionDetection(const VectorX x)
 			// set particle velocity to dampened velocity
 			m_mesh->m_current_velocities.block_vector( i ) = vn + vt;
 		}
+		if (this->IntersectionTest(xi, normal, dist)) {
 
+		}
 		else isColliding[i] = false;
 	}
 

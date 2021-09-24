@@ -172,3 +172,12 @@ UpgradeLog*.htm
 
 # Microsoft Fakes
 FakesAssemblies/
+*.db
+*.db
+*.db-shm
+*.db
+.vs/fast_mass_spring/v16/Browse.VC.opendb
+.vs/fast_mass_spring/v16/Browse.VC.db-wal
+*.db
+.vs/fast_mass_spring/v16/Browse.VC.db
+*.json

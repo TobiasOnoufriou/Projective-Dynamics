@@ -27,6 +27,10 @@
 // Contact Tiantian Liu (ltt1598@gmail.com) if you have any questions.              //
 //----------------------------------------------------------------------------------//
 
+
+//This below will allow for switching between GPU and CPU simulation.
+#define _CUDA_CODE_COMPILE_ 
+
 #pragma warning( disable : 4244)
 #include <omp.h>
 
@@ -546,9 +550,13 @@ void TW_CALL step_through(void*)
 
 	// enable step mode
 	g_simulation->SetStepMode(true);
-	// update cloth
-	g_simulation->Update();
-	// disable step mode
+	// update cloth 
+#ifdef _CUDA_CODE_COMPILE_
+	g_simulation->UpdateCuda();
+#else
+	g_simulation->Update(); //The overall simulation that is called
+#endif
+							// disable step mode
 	g_simulation->SetStepMode(false);
 
 	g_current_frame++;

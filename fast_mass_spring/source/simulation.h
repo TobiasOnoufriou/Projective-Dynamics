@@ -54,6 +54,7 @@ typedef enum
 typedef enum
 {
 	INTEGRATION_PBD,
+	INTEGRATION_PD,
 	INTEGRATION_LOCAL_GLOBAL,
 	INTEGRATION_EXPLICIT_EULER,
 	INTEGRATION_EXPLICIT_SYMPLECTIC,
@@ -75,6 +76,7 @@ public:
 
 	void Reset();
 	void UpdateAnimation(const int fn);
+	void UpdateCuda();
 	void Update();
 	void DrawConstraints(const VBO& vbos);
 
@@ -94,20 +96,20 @@ public:
 	void LoadAttachmentConstraint(const char* filename);
 
 	// inline functions
-	inline IntegrationMethod GetIntegrationMethod() {return m_integration_method; }
-	inline void SetReprefactorFlag() 
+	inline IntegrationMethod GetIntegrationMethod() { return m_integration_method; }
+	inline void SetReprefactorFlag()
 	{
 		//TODO: set prefactorization flag to true if you have prefactored anything
 	}
-	inline void SetMesh(Mesh* mesh) {m_mesh = mesh;}
-	inline void SetScene(Scene* scene) {m_scene = scene;}
-	inline void SetStepMode(bool step_mode) {m_step_mode = step_mode;}
-	
+	inline void SetMesh(Mesh* mesh) { m_mesh = mesh; }
+	inline void SetScene(Scene* scene) { m_scene = scene; }
+	inline void SetStepMode(bool step_mode) { m_step_mode = step_mode; }
+
 protected:
 
 	// simulation constants
 	ScalarType m_h; // time_step
-	bool m_quasi_statics; 
+	bool m_quasi_statics;
 	bool m_step_mode;
 
 	// simulation constants
@@ -123,8 +125,8 @@ protected:
 	IntegrationMethod m_integration_method;
 
 	// key simulation components: mesh and scene
-	Mesh *m_mesh;
-	Scene *m_scene;
+	Mesh* m_mesh;
+	Scene* m_scene;
 	// key simulation components: constraints
 	std::vector<Constraint*> m_constraints;
 	AttachmentConstraint* m_selected_attachment_constraint;
@@ -152,7 +154,7 @@ protected:
 	int m_animation_swing_num;
 	int m_animation_swing_half_period;
 	ScalarType m_animation_swing_amp;
-	ScalarType m_animation_swing_dir[3];	
+	ScalarType m_animation_swing_dir[3];
 
 	SparseMatrix m_A_attachment;
 	SparseMatrix m_A_spring;
@@ -174,6 +176,7 @@ private:
 	void calculateInertiaY(); // calculate the inertia term: y = current_pos + current_vel*h
 	void calculateExternalForce(); // wind force is propotional to the area of triangles projected on the tangential plane
 	VectorX collisionDetection(const VectorX x); // detect collision and return a vector of penetration
+	bool IntersectionTest(EigenVector3& p, EigenVector3& normal, ScalarType& dist); // IntersectionTest for self collision of mesh.
 
 	// there should also be such functions that...
 	// handles traditional time integration methods such as EE, Baraff-Witkin, etc..
