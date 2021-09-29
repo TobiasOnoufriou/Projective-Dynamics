@@ -31,6 +31,10 @@
 #include <omp.h>
 #include <exception>
 
+#include <cuda.h>
+#include <cuda_runtime_api.h>
+
+
 #include "simulation.h"
 #include "timer_wrapper.h"
 
@@ -342,9 +346,13 @@ void Simulation::CreateRHSMatrix()
 ////////////////////////////////////////////////////
 // Update() using the GPU
 ////////////////////////////////////////////////////
-
 void Simulation::UpdateCuda() {
+	// This function will need to be put inside a kernelSimulation.cu file 
+	// And will need to use the vector maths libraries provided by cuda.
 
+
+	std::cout << "Running on GPU" << std::endl;
+	this->Update();
 }
 
 

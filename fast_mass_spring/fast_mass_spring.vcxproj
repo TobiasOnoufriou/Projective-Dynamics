@@ -103,6 +103,11 @@
       <AdditionalLibraryDirectories>../external_dependencies/AntTweakBar/lib;../external_dependencies/glew/lib;../external_dependencies/freeglut/lib/x64;../external_dependencies/TinyXML/lib;$(CudaToolKitLibDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>tinyxml_STL.lib;glew32.lib;cudart.lib;glew32mx.lib;glu32.lib;opengl32.lib;freeglut.lib;AntTweakBar.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <CudaCompile>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <CodeGeneration>compute_52,sm_52</CodeGeneration>
+      <CudaRuntime>Static</CudaRuntime>
+    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -123,6 +128,11 @@
       <AdditionalLibraryDirectories>../external_dependencies/AntTweakBar/lib;../external_dependencies/glew/lib;../external_dependencies/freeglut/lib/x64;../external_dependencies/TinyXML/lib;$(CudaToolKitLibDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>tinyxml_STL.lib;glew32.lib;cudart.lib;glu32.lib;opengl32.lib;freeglut.lib;AntTweakBar64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <CudaCompile>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <CodeGeneration>compute_52,sm_52</CodeGeneration>
+      <CudaRuntime>Static</CudaRuntime>
+    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="config\config.txt" />
@@ -169,6 +179,9 @@
     <ClInclude Include="source\stb_image_write.h" />
     <ClInclude Include="source\timer.h" />
     <ClInclude Include="source\timer_wrapper.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="kernel_simulation.cu" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

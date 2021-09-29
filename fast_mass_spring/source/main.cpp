@@ -116,6 +116,9 @@ void draw_overlay(void);
 void grab_screen(void);
 void grab_screen(char* filename);
 
+
+extern "C" bool execute_simulation();
+
 int main(int argc, char ** argv)
 {
 	// gl init
@@ -191,8 +194,16 @@ void timeout(int value)
 		// update animation
 		g_simulation->UpdateAnimation(g_current_frame);
 
-		// update mesh
-		g_simulation->Update();
+
+	#ifdef _CUDA_CODE_COMPILE_
+
+		std::cout << "We are here?" << std::endl;
+		//This will require having to use .cu file.
+		g_simulation->UpdateCuda();
+	#else
+		std::cout << "are here yes?" << std::endl;
+		g_simulation->Update(); //The overall simulation that is called
+	#endif
 
 		// grab screen
 		if (g_record) 
@@ -552,8 +563,11 @@ void TW_CALL step_through(void*)
 	g_simulation->SetStepMode(true);
 	// update cloth 
 #ifdef _CUDA_CODE_COMPILE_
+	std::cout << "We are here?" << std::endl;
+	execute_simulation();
 	g_simulation->UpdateCuda();
 #else
+	std::cout << "are here yes?" << std::endl;
 	g_simulation->Update(); //The overall simulation that is called
 #endif
 							// disable step mode

@@ -117,10 +117,10 @@
     <ClCompile Include="source\constraint.cpp">
       <Filter>Source Files\simulation\constraints</Filter>
     </ClCompile>
-    <ClCompile Include="source\simulation.cpp">
+    <ClCompile Include="source\simpleTimer.cpp">
       <Filter>Source Files\simulation\simulation</Filter>
     </ClCompile>
-    <ClCompile Include="source\simpleTimer.cpp">
+    <ClCompile Include="source\simulation.cpp">
       <Filter>Source Files\simulation\simulation</Filter>
     </ClCompile>
   </ItemGroup>
@@ -182,5 +182,10 @@
     <ClInclude Include="source\simpleTimer.h">
       <Filter>Source Files\simulation\simulation</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="kernel_simulation.cu">
+      <Filter>Source Files\simulation\simulation</Filter>
+    </CudaCompile>
   </ItemGroup>
 </Project>
